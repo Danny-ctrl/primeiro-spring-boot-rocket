@@ -1,0 +1,65 @@
+debug: false
+
+server:
+  port: "${APP_PORT:3000}"
+  shutdown: graceful
+
+spring:
+  output:
+    ansi:
+      enabled: always
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      additional-exclude: "test/**"
+  application:
+    name: "spring-rocket"
+  main:
+    banner-mode: off
+  mvc:
+    problemdetails: #rfc7807
+      enabled: true
+  jackson:
+    default-property-inclusion: non-null
+    deserialization:
+      fail-on-unknown-properties: false
+  docker:
+
+    compose:
+      enabled: true
+      file: "docker-compose.yaml"
+  jpa:
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  datasource:
+    # jdbc:postgresql://localhost:5432/postgres
+    url: "jdbc:${DATABASE_TYPE}://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}"
+    username: "${DATABASE_USER}"
+    password: "${DATABASE_PASSWORD}"
+    driver-class-name: "org.postgresql.Driver"
+  #    hikari:
+#      username: "${DATABASE_USER}"
+#      password: "${DATABASE_PASSWORD}"
+#      jdbc-url: "jdbc:${DATABASE_TYPE}://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}"
+#      driver-class-name: "org.postgresql.Driver"
+  flyway:
+    enabled: true
+    url: "jdbc:${DATABASE_TYPE}://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}"
+    user: "${DATABASE_USER}"
+    password: "${DATABASE_PASSWORD}"
+    default-schema: "${DATABASE_SCHEMA}"
+    table: "migrations"
+    locations: "classpath:migrations"
+    sql-migration-prefix: "0"
+    sql-migration-separator: "-"
+    connect-retries: 3
+    connect-retries-interval: "15s"
+    baseline-on-migrate: true
+    fail-on-missing-locations: true
+
+management:
+  endpoints:
+    enabled-by-default: true
